@@ -45,11 +45,11 @@ export async function runCommentAutomation(
 function buildPrompt(key, { tone = 'friendly', goal = '', background = '' } = {}, ctx = {}) {
   const post = (ctx.postText || '').slice(0, 500);
   return `You are acting as a **${key}**.
-Tone: ${tone}. Goal: ${goal}. Background: ${background}.
+  Tone: ${tone}. Goal: ${goal}. Background: ${background}.
 
-Write a thoughtful ≤120-word comment on this post:
-“${post}”
-End with an inviting question.`;
+  Write a thoughtful ≤120-word comment on this post:
+  “${post}”
+  End with an inviting question.`;
 }
 
 function scrapePostContext() {
