@@ -13,7 +13,7 @@ export function downloadLog() {
 
   chrome.downloads.download({
     url      : data,
-    filename : `linkedin-ai-outreach-log-${Date.now()}.txt`,
+    filename : `ConnectIN-log-${Date.now()}.txt`,
     saveAs   : true
   });
 }
