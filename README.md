@@ -32,8 +32,8 @@ linkedin-ai-outreach/
 ## 1 · Install
 
 ```bash
-git clone https://github.com/your-org/linkedin-ai-outreach.git
-cd linkedin-ai-outreach
+git clone https://github.com/mmanav02/ConnectIN.git
+cd ConnectIN
 ```
 
 1. Open **chrome://extensions**
@@ -87,7 +87,7 @@ Accepted formats:
 ## 5 · Run
 
 1. Click the extension icon.
-2. Confirm API key.
+2. Confirm ANTHROPIC API key.
 3. **Function**: `message` or `comment`.
 4. **Persona**: choose from dropdown.
 5. **File**: select the URL list.
