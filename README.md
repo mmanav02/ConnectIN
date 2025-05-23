@@ -119,3 +119,6 @@ Tabs open in the background; progress logs in the popup.
 * Extend scrapers for education, skills, etc.
 
 ---
+
+### Tutorial - Explanation of the Extension
+[Explanation Recording Link](https://drive.google.com/file/d/1oXRqofhY6ljW2u-D3lb-B-dZOwlNSjVC/view?usp=drive_link)
