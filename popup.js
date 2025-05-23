@@ -23,16 +23,17 @@ const log   = m => {
 };
 
 /* buttons */
-document.getElementById('run').onclick         = start;
+document.getElementById('run').onclick = start;
+document.getElementById('dry').onclick = startDry;
 document.getElementById('downloadLog').onclick = () =>
   chrome.runtime.sendMessage({ cmd: 'downloadLog' });
 
-async function start() {
+async function startDry(){
   const apiKey  = document.getElementById('apiKey').value.trim();
   const task    = document.getElementById('task').value;
   const persona = document.getElementById('persona').value.trim();
   const file    = document.getElementById('fileInput').files[0];
-
+  const dryRun = 1;
   if (!apiKey || !file) return log('⚠️  API key and file required');
 
   const raw  = await file.text();
@@ -45,7 +46,30 @@ async function start() {
 
   chrome.storage.local.set({ apiKey });
   chrome.runtime.sendMessage(
-    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls },
+    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls , dryRun},
+    res => log(res?.msg || 'queued')
+  );
+}
+
+async function start() {
+  const apiKey  = document.getElementById('apiKey').value.trim();
+  const task    = document.getElementById('task').value;
+  const persona = document.getElementById('persona').value.trim();
+  const file    = document.getElementById('fileInput').files[0];
+  const dryRun = 0;
+  if (!apiKey || !file) return log('⚠️  API key and file required');
+
+  const raw  = await file.text();
+  const urls = file.name.endsWith('.json')
+    ? JSON.parse(raw)
+    : raw.split(/[\n,]/).map(u => u.trim()).filter(Boolean);
+
+  const meta = personas[persona];
+  if (!meta) return log(`❌ persona “${persona}” not found`);
+
+  chrome.storage.local.set({ apiKey });
+  chrome.runtime.sendMessage(
+    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls , dryRun},
     res => log(res?.msg || 'queued')
   );
 }

@@ -3,7 +3,7 @@ import * as L         from './logger.js';
 
 /* exported to index.js */
 export async function runCommentAutomation(
-  { personaKey, personaMeta, urls },
+  { personaKey, personaMeta, urls , dryRun},
   { delay, randomDelay, waitForTabLoad }
 ) {
   L.log(`Comment run started – persona: ${personaKey}, urls: ${urls.length}`);
@@ -27,12 +27,22 @@ export async function runCommentAutomation(
                          .catch(err => (L.error('Claude error', err), null));
     if (!text) continue;
 
-    await chrome.scripting.executeScript({
+    if(!dryRun)
+    {
+      await chrome.scripting.executeScript({
       target: { tabId: id },
       func  : submitLinkedInComment,
       args  : [text],
       world : 'MAIN'
+    });}
+    else{
+      await chrome.scripting.executeScript({
+      target: { tabId: id },
+      func  : fillLinkedInComment,
+      args  : [text],
+      world : 'MAIN'
     });
+    }
 
     L.log('comment posted on', url);
   }
@@ -84,5 +94,28 @@ function submitLinkedInComment(comment) {
                                : form.submit();
       L.log('comment submit triggered');
     }, 1500);
+  });
+}
+
+function fillLinkedInComment(comment) {
+  // 1 – Open the visible comment editor
+  document.querySelector(
+    'button[data-control-name="reply_toggle"], button[aria-label*="Comment"]'
+  )?.click();
+
+  // 2 – Wait for the first visible editable box, then populate it
+  const waitEd = (cb, t = 0) => {
+    const editor = [...document.querySelectorAll('div[role="textbox"][contenteditable="true"]')]
+      .find(el => el.offsetParent !== null);
+    if (editor) return cb(editor);
+    if (t < 4000) setTimeout(() => waitEd(cb, t + 200), 200);
+  };
+
+  waitEd(editor => {
+    editor.focus();
+    document.execCommand('selectAll', false, null);
+    document.execCommand('insertText', false, comment);
+    editor.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    console.log('Comment drafted – review before sending');
   });
 }

@@ -3,7 +3,7 @@ import { callClaude }   from './utils.js';
 
 /* exported to index.js */
 export async function runMessageAutomation(
-  { personaKey, personaMeta, urls },
+  { personaKey, personaMeta, urls, dryRun },
   { delay, randomDelay, waitForTabLoad }
 ) {
   L.log(`DM run started - persona: ${personaKey}, urls: ${urls.length}`);
@@ -27,12 +27,22 @@ export async function runMessageAutomation(
                          .catch(err => (L.error('Claude error', err), null));
     if (!text) continue;
 
-    await chrome.scripting.executeScript({
+    if(!dryRun)
+    {
+      await chrome.scripting.executeScript({
       target: { tabId: id },
-      func  : performAction,
+      func  : sendMessage,
+      args  : [text],
+      world : 'MAIN'
+    });}
+    else{
+      await chrome.scripting.executeScript({
+      target: { tabId: id },
+      func  : fillMessage,
       args  : [text],
       world : 'MAIN'
     });
+    }
 
     L.log('DM sent to', url);
   }
@@ -88,7 +98,7 @@ function scrapeProfileContext() {
   };
 }
 
-function performAction(text) {
+function sendMessage(text) {
   const btn = document.querySelector('button[aria-label^="Message"], a[href*="messaging?"]');
   if (!btn) { L.warn('Message button not found'); return; }
 
@@ -115,3 +125,29 @@ function performAction(text) {
     waitSend();
   });
 }
+
+function fillMessage(text) {
+  const btn = document.querySelector('button[aria-label^="Message"], a[href*="messaging?"]');
+  if (!btn) {
+    console.warn('Message button not found');
+    return;
+  }
+  btn.click();
+
+  const waitBox = (cb, t = 0) => {
+    const box = document.querySelector(
+      '[contenteditable="true"][role="textbox"].msg-form__contenteditable'
+    );
+    if (box) return cb(box);
+    if (t < 5000) setTimeout(() => waitBox(cb, t + 200), 200);
+  };
+
+  waitBox(box => {
+    box.focus();
+    document.execCommand('selectAll', false, null);
+    document.execCommand('insertText', false, text);
+    box.dispatchEvent(new Event('input', { bubbles: true }));
+    console.log('DM text inserted – waiting for manual review before sending');
+  });
+}
+
