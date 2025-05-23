@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "LinkedIn AI Outreach",
+  "name": "ConnectIN",
   "description": "Auto-message profiles and comment on posts with Anthropic Claude personas.",
   "version": "0.1.0",
   "action": { "default_popup": "popup.html", "default_title": "LinkedIn AI Outreach" },
@@ -37,5 +37,9 @@
       "resources": ["personas.json"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+
+  "icons":{
+    "128":"icons/128.jpg"
+  }
 }
