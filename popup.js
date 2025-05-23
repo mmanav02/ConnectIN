@@ -1,27 +1,31 @@
 let personas = {};
 
-// load personas.json ➜ build <select>
+/* load personas.json → build dropdown */
 (async () => {
   try {
-    const resp = await fetch(chrome.runtime.getURL('personas.json'));
-    personas = await resp.json();
+    const data = await fetch(chrome.runtime.getURL('personas.json')).then(r => r.json());
+    personas = data;
     const sel = document.getElementById('persona');
     Object.keys(personas).forEach(k => {
-      const o = document.createElement('option');
-      o.value = o.textContent = k.trim();
-      sel.appendChild(o);
+      const opt   = document.createElement('option');
+      opt.value   = opt.textContent = k.trim();
+      sel.appendChild(opt);
     });
   } catch (e) {
     console.error(e); log('❌ could not load personas.json');
   }
 })();
 
-/* log helper */
 const logEl = document.getElementById('log');
-const log   = m => (logEl.textContent += m + '\n', logEl.scrollTop = logEl.scrollHeight);
+const log   = m => {
+  logEl.textContent += m + '\n';
+  logEl.scrollTop    = logEl.scrollHeight;
+};
 
 /* buttons */
-document.getElementById('run').onclick     = () => start();
+document.getElementById('run').onclick         = start;
+document.getElementById('downloadLog').onclick = () =>
+  chrome.runtime.sendMessage({ cmd: 'downloadLog' });
 
 async function start() {
   const apiKey  = document.getElementById('apiKey').value.trim();
@@ -29,7 +33,7 @@ async function start() {
   const persona = document.getElementById('persona').value.trim();
   const file    = document.getElementById('fileInput').files[0];
 
-  if (!apiKey || !file) return log('⚠️ API key and file required');
+  if (!apiKey || !file) return log('⚠️  API key and file required');
 
   const raw  = await file.text();
   const urls = file.name.endsWith('.json')
@@ -41,7 +45,7 @@ async function start() {
 
   chrome.storage.local.set({ apiKey });
   chrome.runtime.sendMessage(
-    { cmd:'queue', task, personaKey:persona, personaMeta:meta, urls},
+    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls },
     res => log(res?.msg || 'queued')
   );
 }

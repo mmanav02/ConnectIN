@@ -6,10 +6,11 @@
   "action": { "default_popup": "popup.html", "default_title": "LinkedIn AI Outreach" },
 
   "permissions": [
-    "tabs",
-    "scripting",
-    "storage",
-    "activeTab"
+  "tabs",
+  "scripting",
+  "storage",
+  "activeTab",
+  "downloads"
   ],
 
   "host_permissions": [
