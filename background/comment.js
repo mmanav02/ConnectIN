@@ -65,19 +65,19 @@ function submitLinkedInComment(comment) {
   )?.click();
 
   const waitEd = (cb, t = 0) => {
-    const ed = [...document.querySelectorAll('div[role="textbox"][contenteditable="true"]')]
+    const editor = [...document.querySelectorAll('div[role="textbox"][contenteditable="true"]')]
       .find(el => el.offsetParent !== null);
-    ed ? cb(ed) : t < 4000 && setTimeout(() => waitEd(cb, t + 200), 200);
+    editor ? cb(editor) : t < 4000 && setTimeout(() => waitEd(cb, t + 200), 200);
   };
 
-  waitEd(ed => {
-    ed.focus();
+  waitEd(editor => {
+    editor.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, comment);
-    ed.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    editor.dispatchEvent(new InputEvent('input', { bubbles: true }));
 
     setTimeout(() => {
-      const form = ed.closest('form');
+      const form = editor.closest('form');
       const btn  = [...form.querySelectorAll('button[type="submit"]:not([disabled])')][0];
       btn ? btn.click()
           : form.requestSubmit ? form.requestSubmit()

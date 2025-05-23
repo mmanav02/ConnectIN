@@ -6,7 +6,7 @@ export async function runMessageAutomation(
   { personaKey, personaMeta, urls },
   { delay, randomDelay, waitForTabLoad }
 ) {
-  L.log(`DM run started – persona: ${personaKey}, urls: ${urls.length}`);
+  L.log(`DM run started - persona: ${personaKey}, urls: ${urls.length}`);
 
   for (const url of urls) {
     await delay(randomDelay());
@@ -55,13 +55,13 @@ function buildPrompt(key, { tone = 'friendly', goal = '', background = '' } = {}
     .join('\n') || '• (No public details visible)';
 
   return `You are acting as a **${key}**.
-Tone: ${tone}. Goal: ${goal}. Background: ${background}.
+  Tone: ${tone}. Goal: ${goal}. Background: ${background}.
 
-Compose a LinkedIn direct message to **${name}**.
-Profile snapshot:
-${bullets}
+  Compose a LinkedIn direct message to **${name}**.
+  Profile snapshot:
+  ${bullets}
 
-Write ≤120 words, reference at least one detail, end with an engaging question.`;
+  Write ≤120 words, reference at least one detail, end with an engaging question.`;
 }
 
 function scrapeProfileContext() {
