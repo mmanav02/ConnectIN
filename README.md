@@ -77,8 +77,8 @@ Accepted formats:
 
 ```json
 [
-  "https://www.linkedin.com/in/jane-doe/",
-  "https://www.linkedin.com/in/john-smith/"
+  "https://www.linkedin.com/in/manavv-vakharia/",
+  "https://www.linkedin.com/in/sahajpatel008/"
 ]
 ```
 
