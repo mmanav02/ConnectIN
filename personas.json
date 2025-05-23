@@ -1,0 +1,17 @@
+{
+  "Sales Rep": {
+    "tone": "friendly and concise",
+    "goal": "arrange a discovery call to explore pain points",
+    "background": "B2B SaaS sales, quota-carrying"
+  },
+  "Startup Founder": {
+    "tone": "visionary, informal",
+    "goal": "start a conversation about potential collaboration or market insights",
+    "background": "early-stage founder building AI-driven products"
+  },
+  "Technical Recruiter": {
+    "tone": "professional and direct",
+    "goal": "assess skill fit and generate interest in an open role",
+    "background": "recruiting engineers for high-growth tech companies"
+  }
+}

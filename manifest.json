@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn AI Outreach",
+  "description": "Auto-message profiles and comment on posts with Anthropic Claude personas.",
+  "version": "0.1.0",
+  "action": { "default_popup": "popup.html", "default_title": "LinkedIn AI Outreach" },
+
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage",
+    "activeTab"
+  ],
+
+  "host_permissions": [
+  "https://www.linkedin.com/*",
+  "https://api.anthropic.com/*"
+  ],
+
+  "background": {
+  "service_worker": "background/index.js",
+  "type": "module"
+  },
+
+  "content_scripts": [
+    {
+    "matches": ["https://www.linkedin.com/*"],
+    "js": ["content.js"],
+    "world": "MAIN",
+    "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["personas.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

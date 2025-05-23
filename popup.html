@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <label>Anthropic API Key</label>
+  <input id="apiKey" type="text" placeholder="sk-ant-…" />
+
+  <label>Function</label>
+  <select id="task">
+    <option value="message">Message profiles</option>
+    <option value="comment">Comment on posts</option>
+  </select>
+
+  <label>Persona</label>
+  <select id="persona"></select>
+
+  <label>Upload .csv / .json with URLs</label>
+  <input id="fileInput" type="file" accept=".json,.csv" />
+  <button id="run">Run automation</button>
+
+  <pre id="log" style="white-space:pre-wrap;height:120px;overflow:auto;"></pre>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
