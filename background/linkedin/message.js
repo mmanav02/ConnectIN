@@ -1,5 +1,5 @@
-import * as L           from './logger.js';
-import { callClaude }   from './utils.js';
+import * as L           from '../logger.js';
+import { callClaude }   from '../utils.js';
 
 /* exported to index.js */
 export async function runMessageAutomation(

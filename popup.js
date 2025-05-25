@@ -26,11 +26,12 @@ const log   = m => {
 document.getElementById('run').onclick = start;
 document.getElementById('dry').onclick = startDry;
 document.getElementById('downloadLog').onclick = () =>
-  chrome.runtime.sendMessage({ cmd: 'downloadLog' });
+chrome.runtime.sendMessage({ cmd: 'downloadLog' });
 
 async function startDry(){
   const apiKey  = document.getElementById('apiKey').value.trim();
   const task    = document.getElementById('task').value;
+  const platform = document.getElementById('platform').value;
   const persona = document.getElementById('persona').value.trim();
   const file    = document.getElementById('fileInput').files[0];
   const dryRun = 1;
@@ -46,7 +47,7 @@ async function startDry(){
 
   chrome.storage.local.set({ apiKey });
   chrome.runtime.sendMessage(
-    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls , dryRun},
+    { cmd: 'queue', platform, task, personaKey: persona, personaMeta: meta, urls , dryRun},
     res => log(res?.msg || 'queued')
   );
 }
@@ -54,6 +55,7 @@ async function startDry(){
 async function start() {
   const apiKey  = document.getElementById('apiKey').value.trim();
   const task    = document.getElementById('task').value;
+  const platform = document.getElementById('platform').value;
   const persona = document.getElementById('persona').value.trim();
   const file    = document.getElementById('fileInput').files[0];
   const dryRun = 0;
@@ -69,7 +71,7 @@ async function start() {
 
   chrome.storage.local.set({ apiKey });
   chrome.runtime.sendMessage(
-    { cmd: 'queue', task, personaKey: persona, personaMeta: meta, urls , dryRun},
+    { cmd: 'queue', platform, task, personaKey: persona, personaMeta: meta, urls , dryRun},
     res => log(res?.msg || 'queued')
   );
 }

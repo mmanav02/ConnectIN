@@ -1,7 +1,9 @@
 import { delay, randomDelay, waitForTabLoad } from './utils.js';
-import { runMessageAutomation }              from './message.js';
-import { runCommentAutomation }              from './comment.js';
+import { runMessageAutomation }              from './linkedin/message.js';
+import { runCommentAutomation }              from './linkedin/comment.js';
 import * as L                                from './logger.js';
+import { runTwitterDM }               from './twitter/message.js';
+import { runTwitterComment }          from './twitter/comment.js';
 
 const { downloadLog } = L;
 
@@ -37,11 +39,20 @@ async function drain() {
   while (q.length) {
     const job = q.shift();
     try {
-      if (job.task === 'message') {
-        await runMessageAutomation(job, { delay, randomDelay, waitForTabLoad });
-      } else if (job.task === 'comment') {
-        await runCommentAutomation(job, { delay, randomDelay, waitForTabLoad });
-      } else {
+      if (job.platform === 'twitter') {
+        if (job.task === 'message') {
+          console.log("Sending X message");
+          await runTwitterDM(job, { delay, randomDelay, waitForTabLoad });
+        } else if (job.task === 'comment') {
+          await runTwitterComment(job, { delay, randomDelay, waitForTabLoad });
+        }
+    } else if(job.platform == "linkedin") {
+        if (job.task === 'message') {
+          await runMessageAutomation(job, { delay, randomDelay, waitForTabLoad });
+        } else if (job.task === 'comment') {
+          await runCommentAutomation(job, { delay, randomDelay, waitForTabLoad });
+        }
+    } else {
         L.warn('unknown task', job.task);
       }
     } catch (e) { L.error('runner error', e.message || e); }
@@ -50,3 +61,4 @@ async function drain() {
   busy = false;
   L.log('drain finished');
 }
+
