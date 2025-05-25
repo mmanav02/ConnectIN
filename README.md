@@ -60,6 +60,6 @@ connectai/
 2. In popup: choose platform, task, persona, dry‑run (optional), upload file.  
 3. Click **Run automation**.
 
--__
+---
 
 MIT License
