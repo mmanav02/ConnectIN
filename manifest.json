@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ConnectAI",
   "description": "Auto-message LinkedIn profiles and Twitter users, and comment on posts/tweets with Claude personas.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "action": {
     "default_popup": "popup.html",
     "default_title": "LinkedIn AI Outreach"
@@ -20,7 +20,10 @@
     "https://*.twitter.com/*",
     "https://www.twitter.com/*",
     "https://twitter.com/*",
-    "https://x.com/*"
+    "https://x.com/*",
+    "https://www.instagram.com/*",
+    "https://*.instagram.com/*",
+    "https://instagram.com/*"
   ],
   "background": {
     "service_worker": "background/index.js",
@@ -34,7 +37,10 @@
         "https://*.twitter.com/*",
         "https://www.twitter.com/*",
         "https://twitter.com/*",
-        "https://x.com/*"
+        "https://x.com/*",
+        "https://www.instagram.com/*",
+        "https://*.instagram.com/*",
+        "https://instagram.com/*"
       ],
       "js": [
         "content.js"

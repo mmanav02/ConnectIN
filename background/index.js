@@ -4,6 +4,8 @@ import { runCommentAutomation }              from './linkedin/comment.js';
 import * as L                                from './logger.js';
 import { runTwitterDM }               from './twitter/message.js';
 import { runTwitterComment }          from './twitter/comment.js';
+import { runInstagramComment } from './instagram/comment.js';
+import { runInstagramDM } from './instagram/message.js';
 
 const { downloadLog } = L;
 
@@ -46,16 +48,22 @@ async function drain() {
         } else if (job.task === 'comment') {
           await runTwitterComment(job, { delay, randomDelay, waitForTabLoad });
         }
-    } else if(job.platform == "linkedin") {
+    } else if(job.platform === "linkedin") {
         if (job.task === 'message') {
           await runMessageAutomation(job, { delay, randomDelay, waitForTabLoad });
         } else if (job.task === 'comment') {
           await runCommentAutomation(job, { delay, randomDelay, waitForTabLoad });
         }
+    } else if(job.platform === "instagram"){
+        if(job.task === 'message'){  
+          await runInstagramDM(job, { delay, randomDelay, waitForTabLoad })
+        } else if(job.task === "comment"){
+          await runInstagramComment(job, { delay, randomDelay, waitForTabLoad })
+        }
     } else {
         L.warn('unknown task', job.task);
       }
-    } catch (e) { L.error('runner error', e.message || e); }
+    } catch (e) { L.error('runner error: ', e.message || e); }
   }
 
   busy = false;
