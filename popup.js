@@ -23,8 +23,10 @@ const log   = m => {
 };
 
 /* buttons */
-document.getElementById('run').onclick = start;
-document.getElementById('dry').onclick = startDry;
+document.getElementById('run').onclick = () => start(0);
+document.getElementById('dry').onclick = () => start(1);
+// document.getElementById('run').onclick = start;
+// document.getElementById('dry').onclick = startDry;
 document.getElementById('downloadLog').onclick = () =>
 chrome.runtime.sendMessage({ cmd: 'downloadLog' });
 
@@ -52,29 +54,53 @@ async function startDry(){
   );
 }
 
-async function start() {
-  const apiKey  = document.getElementById('apiKey').value.trim();
-  const task    = document.getElementById('task').value;
+async function start(dryRun = 0) {
+  const apiKey   = document.getElementById('apiKey').value.trim();
+  const task     = document.getElementById('task').value;
   const platform = document.getElementById('platform').value;
-  const persona = document.getElementById('persona').value.trim();
-  const file    = document.getElementById('fileInput').files[0];
-  const dryRun = 0;
-  if (!apiKey || !file) return log('⚠️  API key and file required');
+  const persona  = document.getElementById('persona').value.trim();
+  const file     = document.getElementById('fileInput').files[0];
 
-  const raw  = await file.text();
-  const urls = file.name.endsWith('.json')
-    ? JSON.parse(raw)
-    : raw.split(/[\n,]/).map(u => u.trim()).filter(Boolean);
-
+  if (!apiKey) return log('⚠️  API key is required');
   const meta = personas[persona];
   if (!meta) return log(`❌ persona “${persona}” not found`);
 
+  let urls = [];
+
+  if (!file && platform === 'linkedin' && task === 'message') {
+    urls = await extractUrlsFromPage();
+  } else if (file) {
+    const raw = await file.text();
+    urls = file.name.endsWith('.json')
+      ? JSON.parse(raw)
+      : raw.split(/[\n,]/).map(u => u.trim()).filter(Boolean);
+  } else {
+    return log('⚠️ Upload a file or use LinkedIn extractor mode.');
+  }
+
+  if (!urls.length) return;
+
   chrome.storage.local.set({ apiKey });
   chrome.runtime.sendMessage(
-    { cmd: 'queue', platform, task, personaKey: persona, personaMeta: meta, urls , dryRun},
-    res => log(res?.msg || 'queued')
+    { cmd: 'queue', platform, task, personaKey: persona, personaMeta: meta, urls, dryRun },
+    res => log(res?.msg || '✅ Queued')
   );
 }
+
+
+async function extractUrlsFromPage() {
+  return new Promise(resolve => {
+    chrome.runtime.sendMessage({ cmd: 'extractUrls' }, res => {
+      if (res?.urls?.length) resolve(res.urls);
+      else {
+        log('❌ No LinkedIn URLs found on the page');
+        resolve([]);
+      }
+    });
+  });
+}
+
+
 
 /* restore saved key */
 chrome.storage.local.get('apiKey', d => {

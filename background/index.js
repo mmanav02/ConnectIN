@@ -70,3 +70,31 @@ async function drain() {
   L.log('drain finished');
 }
 
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.cmd === 'extractUrls') {
+    chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
+      if (!tab?.id) return sendResponse({ urls: [] });
+
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          const anchors = [...document.querySelectorAll('a[href*="linkedin.com/in/"]')];
+          return [...new Set(
+            anchors.map(a => a.href.trim()).filter(h =>
+              /^https?:\/\/(www\.)?linkedin\.com\/in\//.test(h)
+            )
+          )];
+        }
+      }).then(([{ result }]) => {
+        sendResponse({ urls: result });
+      }).catch(err => {
+        console.error('Extraction failed:', err);
+        sendResponse({ urls: [] });
+      });
+    });
+
+    return true; // ⚠️ Needed to allow async sendResponse
+  }
+
+  // ... other message handlers ...
+});

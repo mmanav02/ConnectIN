@@ -103,32 +103,37 @@ function openMessagePanel() {
 
 /* ------------------- sendMessage (text → click Send) ------------------- */
 function sendMessage(text) {
-  /* local polling helper – bundled inside the injected code */
-  const waitFor = (selector, predicate, cb, waited = 0, max = 6000) => {
-    const el = [...document.querySelectorAll(selector)].find(predicate);
-    if (el) return cb(el);
-    if (waited < max) setTimeout(() => waitFor(selector, predicate, cb, waited + 200), 200);
+  const waitTextbox = (cb, t = 0) => {
+    const box = document.querySelector(
+      'div[role="textbox"][aria-label="Message"],' +
+      'div[role="textbox"][aria-placeholder="Message..."]'
+    );
+    box ? cb(box) : t < 6000 && setTimeout(() => waitTextbox(cb, t + 200), 200);
   };
 
-  /* 1️⃣  wait for the DM textbox, then inject text */
-  waitFor(
-    'div[role="textbox"][aria-label="Message"],' +
-      'div[role="textbox"][aria-placeholder="Message..."]',
-    () => true,                                 // take the first match
-    (box) => {
-      box.focus();
-      document.execCommand("insertText", false, text);
-      box.dispatchEvent(new InputEvent("input", { bubbles: true }));
+  waitTextbox((box) => {
+    box.focus();
+    document.execCommand("insertText", false, text);
+    box.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-      /* 2️⃣  wait for *this* Send button and click it */
-      waitFor(
-        'div[role="button"]',                   // all role=button elems
-        (btn) => btn.textContent.trim().toLowerCase() === "send" && !btn.disabled,
-        (sendBtn) => sendBtn.click()
-      );
-    }
-  );
+    // Simulate pressing Enter key to send
+    const enterEvent = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key: "Enter",
+      code: "Enter",
+      which: 13,
+      keyCode: 13
+    });
+    box.dispatchEvent(enterEvent);
+    setTimeout(() => {
+      const sendBtn = [...document.querySelectorAll('div[role="button"]')]
+        .find((btn) => btn.textContent.trim().toLowerCase() === "send" && !btn.disabled);
+      sendBtn?.click();
+    }, 300); // small delay to let any synthetic key event settle
+  });
 }
+
 
 
 

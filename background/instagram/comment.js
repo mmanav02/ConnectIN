@@ -87,25 +87,43 @@ async function submitInstagramComment(comment) {
     ta ? cb(ta) : t < 5000 && setTimeout(() => waitTA(cb, t + 200), 200);
   };
 
-  waitTA(async (ta) => {
-    /* 1 ▪ inject text via insertText so React sees it */
+  waitTA((ta) => {
     ta.focus();
     document.execCommand("insertText", false, comment);
     ta.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    await delay(2000);
+    // Attempt Enter key
+    const enterEvent = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key: "Enter",
+      code: "Enter",
+      which: 13,
+      keyCode: 13
+    });
+    ta.dispatchEvent(enterEvent);
 
-    /* 2 ▪ wait for the enabled Post button and click it */
-    const tryClick = (t = 0) => {
-      const btn = [...document.querySelectorAll("button")].find(
-        (b) => /Post/i.test(b.textContent) && !b.disabled
+    let attempts = 0;
+    const tryClick = () => {
+      const postBtn = [...document.querySelectorAll('div[role="button"]')].find(
+        (btn) =>
+          btn.textContent.trim().toLowerCase() === "post" &&
+          btn.offsetParent !== null &&
+          !btn.getAttribute("aria-disabled")
       );
-      if (btn) return btn.click();
-      if (t < 1000) setTimeout(() => tryClick(t + 200), 200);
+      if (postBtn) {
+        postBtn.click();
+      } else if (attempts++ < 10) {
+        setTimeout(tryClick, 200);
+      }
     };
-    tryClick();
+
+    setTimeout(tryClick, 300);
   });
 }
+
+
+
 
 /* ---------- fillInstagramComment: dry-run (fill only) ---------- */
 function fillInstagramComment(comment) {
