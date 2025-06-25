@@ -1,132 +1,93 @@
 # ConnectIN – LinkedIn, Twitter & Instagram Outreach Extension (MV3)
 
-Automate personalized messaging and post engagement on **LinkedIn**, **Twitter/X**, **Instagram** with AI-generated text (Claude, Gemini, etc.).
-
----
+Automate personalized messaging and post engagement on **LinkedIn**, **Twitter/X**, and **Instagram** with AI‑generated text (Claude, Gemini, etc.).
 
 ## ✨ Features
 
-| Platform   | Task     | Action                                                               |
-|------------|----------|----------------------------------------------------------------------|
-| LinkedIn   | Message  | DM each profile with persona-styled text                             |
-| LinkedIn   | Comment  | Comment on each post                                                 |
-| LinkedIn   | **Scrape** | **One-click scrape of all profile URLs on the current LinkedIn page** |
-| Twitter    | DM       | Direct-message each profile                                          |
-| Twitter    | Reply    | Reply to each tweet                                                  |
-| Instagram  | Message  | DM each profile (INBOX) with persona-styled text                     |
-| Instagram  | Comment  | Comment on each post                                                 |
-
----
+| Platform   | Task     | Action                                                                                               |
+|------------|----------|------------------------------------------------------------------------------------------------------|
+| LinkedIn   | Message  | DM each profile with persona‑styled text. **Automatically scrapes all visible profile URLs** on the current page—no extra file needed. |
+| LinkedIn   | Comment  | Comment on each post                                                                                 |
+| Twitter    | DM       | Direct‑message each profile                                                                          |
+| Twitter    | Reply    | Reply to each tweet                                                                                  |
+| Instagram  | Message  | DM each profile (inbox) with persona‑styled text                                                     |
+| Instagram  | Comment  | Comment on each post                                                                                 |
 
 ## 📁 Folder Layout
 
 ```
-connectai/
+connectin/
 ├─ manifest.json
 ├─ popup.{html,js,css}
-├─ personas.json               # persona definitions
+├─ personas.json
 ├─ background/
-│  ├─ index.js                 # dispatcher / messaging queue
+│  ├─ index.js          # service worker / dispatcher
 │  ├─ logger.js
-│  ├─ utils.js                 # delay, callClaude/Gemini, helpers
+│  ├─ utils.js          # delay helpers, AI calls
 │  ├─ linkedin/
-│  │   ├─ message.js           # LinkedIn DM logic
-│  │   ├─ comment.js           # LinkedIn post-comment logic
-│  │   └─ scrape.js            # extracts visible profile URLs
+│  │   ├─ message.js    # DM logic + profile scraper
+│  │   └─ comment.js    # post-comment logic
 │  ├─ twitter/
-│  │   ├─ message.js           # Twitter DM logic
-│  │   └─ comment.js           # Twitter reply logic
+│  │   ├─ message.js    # DM logic
+│  │   └─ comment.js    # tweet-reply logic
 │  └─ instagram/
-│      ├─ message.js           # Instagram DM logic
-│      └─ comment.js           # Instagram post-comment logic
-└─ README.md
+│      ├─ message.js    # DM logic
+│      └─ comment.js    # post-comment logic
+├─ data/                # sample *.json URL lists for testing
+└─ icons/
+   ├─ 128.jpg
+   └─ ConnectIN.png
 ```
 
----
+*(The LinkedIn scraper lives inside `background/linkedin/message.js` as `scrapeProfileContext()`—hence no separate `scrape.js` file.)*
 
 ## ⚙️ Install
 
 1. Clone or unzip the repo  
 2. Open **Chrome** and navigate to `chrome://extensions`  
-3. Enable **Developer mode** (top-right toggle)  
-4. Click **Load unpacked**, then select the `connectai/` folder  
-5. When prompted, grant the requested permissions
-
----
+3. Enable **Developer mode**  
+4. Click **Load unpacked**, then select the project folder (`ConnectIN/`)  
+5. Grant requested permissions when prompted  
 
 ## 🔧 Configuration
 
-| Setting         | Where                               | Notes                                               |
-|-----------------|-------------------------------------|-----------------------------------------------------|
-| **API Key**     | Popup → *Settings* tab              | Masked on screen, persisted with `chrome.storage`   |
-| **Personas**    | `personas.json`                     | Each persona defines `tone`, `goal`, `background`   |
-| **Delays**      | `background/utils.js`               | Adjust `MIN_DELAY_MS` and `MAX_DELAY_MS`            |
-| **IG Cookies**  | Your browser session                | Extension reuses logged-in Instagram web session    |
-
----
+| Setting       | Where                       | Notes                                                 |
+|---------------|-----------------------------|-------------------------------------------------------|
+| **API Key**   | Popup → *Settings* tab      | Masked, stored with `chrome.storage`                  |
+| **Personas**  | `personas.json`             | Define `tone`, `goal`, `background` for each persona  |
+| **Delays**    | `background/utils.js`       | Tweak `MIN_DELAY_MS` / `MAX_DELAY_MS`                 |
 
 ## 🚀 Usage
 
-### Option A – Upload a URL file
+### 1) Upload a URL file  
+Upload a `.csv` or `.json` list of URLs → choose **Platform**, **Task**, **Persona** → **Run automation** or **Dry‑run**.
 
-1. Prepare a `.csv` or `.json` list of profile/post URLs for the chosen platform  
-2. Open the popup and select **Platform**, **Task**, **Persona**  
-3. Upload the file  
-4. Choose **Run automation** or **Dry-run** (generates drafts only)
+### 2) LinkedIn Auto‑Scrape (no file)  
+If **Platform = LinkedIn** + **Task = Message** and *no* file is chosen, the extension will:
 
-### Option B – LinkedIn Auto-Scrape (no file needed)
+1. Collect all visible profile links on the current LinkedIn page (search results, "My Network", etc.)  
+2. Queue them and start sending DMs with your selected persona text.
 
-If **Platform = LinkedIn** and **Task = Message** *and* **no file is uploaded**:
-
-1. Navigate to any LinkedIn page that lists people (search results, “My Network”, company employees, event attendee list, etc.)  
-2. Open the popup → select persona → click **Scrape & Run**  
-3. The extension collects all visible profile URLs, queues them, and begins DM automation automatically.
-
-You can preview the scraped list before sending or hit **Download CSV** to save it.
-
----
+You can preview or download the scraped list before sending.
 
 ## 📜 Logs
 
-After a run, click **Download logs** in the popup to save a timestamped `.txt` detailing:
-
-- URL processed  
-- Prompt sent to Claude/Gemini  
-- Character count & status (drafted / sent / errored)
-
----
+Use **Download logs** (popup) to save a timestamped `.txt` with URL, prompt, length, and status.
 
 ## 🛡️ Permissions
 
-The extension requests:
+- `activeTab`, `tabs`, `scripting` – inject scripts & autofill forms  
+- `storage` – persist API key and settings  
+- Host permissions: `linkedin.com/*`, `twitter.com/*`, `x.com/*`, `instagram.com/*`  
+- No analytics; data flows only to the configured AI API.
 
-- `activeTab`, `tabs`, `scripting` – inject scripts for scraping & form-filling  
-- `storage` – persist API key, settings, session state  
-- Host permissions for `linkedin.com/*`, `twitter.com/*`, `x.com/*`, `instagram.com/*`  
-- **No** analytics or external tracking; data is only exchanged with the configured AI API.
-
----
-
-## 🔄 Development Workflow
+## 🔄 Dev Workflow
 
 ```bash
-# install deps for local dev (optional)
-npm i && npm run build     # bundles background & popup
-
-# fast-reload during edits
-npm run watch
+npm i && npm run build   # bundle background & popup
+npm run watch            # hot‑reload (re‑enable extension after build)
 ```
-
-The MV3 **service-worker** lives in `background/index.js`; hot-reload requires disabling & re-enabling the extension or using Chrome’s **Ctrl/Cmd + R** in the Extensions page.
-
----
-
-## 🤝 Contributing
-
-PRs are welcome! See `CONTRIBUTING.md` for coding style and commit guidelines.
-
----
 
 ## License
 
-MIT © 2025 – ConnectAI Contributors
+MIT © 2025
