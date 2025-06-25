@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "ConnectAI",
+  "name": "ConnectIN ",
   "description": "Auto-message LinkedIn profiles and Twitter users, and comment on posts/tweets with Claude personas.",
   "version": "0.1.1",
   "action": {
