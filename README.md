@@ -90,4 +90,5 @@ npm run watch            # hot‑reload (re‑enable extension after build)
 
 ## License
 MIT © 2025
+
 This repository is part of my internship at [StreamL](https://streaml.app/)
