@@ -12,6 +12,7 @@ Automate personalized messaging and post engagement on **LinkedIn**, **Twitter/X
 | Twitter    | Reply    | Reply to each tweet                                                                                  |
 | Instagram  | Message  | DM each profile (inbox) with persona‑styled text                                                     |
 | Instagram  | Comment  | Comment on each post                                                                                 |
+| Instagram  | Scrape   | Scraping posts and all the profiles in the comment section of the posts                              |
 
 ## 📁 Folder Layout
 

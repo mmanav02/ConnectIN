@@ -5,31 +5,54 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- ───── API key ───── -->
   <label>Anthropic API Key</label>
   <input id="apiKey" type="password" placeholder="sk-ant-…" />
 
+  <!-- ───── Platform selector ───── -->
+  <label>Platform</label>
   <select id="platform">
-  <option value="linkedin">LinkedIn</option>
-  <option value="twitter">Twitter</option>
-  <option value="instagram">Instagram</option>
+    <option value="linkedin">LinkedIn</option>
+    <option value="twitter">Twitter</option>
+    <option value="instagram">Instagram</option>
   </select>
 
-  <label>Function</label>
-  <select id="task">
-    <option value="message">Message profiles</option>
-    <option value="comment">Comment on posts</option>
-  </select>
+  <!-- ───── Instagram-only selector ───── -->
+  <section id="ig-block" class="row hidden">
+    <label for="ig-task">Instagram task</label>
+    <select id="ig-task">
+      <option value="posts">Scrape posts on this page</option>
+      <option value="comment-profiles">Scrape profiles from comment section</option>
+      <option value="start-messaging">Start messaging scraped profiles</option>
+    </select>
+  </section>
 
-  <label>Persona</label>
-  <select id="persona"></select>
+  <!-- ───── Generic message-controls block ───── -->
+  <div id="msg-block">
+    <label>Function</label>
+    <select id="task">
+      <option value="message">Message profiles</option>
+      <option value="comment">Comment on posts</option>
+    </select>
 
-  <label>Upload .csv / .json with URLs</label>
-  <input id="fileInput" type="file" accept=".json,.csv" />
+    <label>Persona</label>
+    <select id="persona"></select>
+
+    <!-- custom-message textarea (hidden until persona = custom) -->
+    <label id="customLabel" class="hidden">Custom message</label>
+    <textarea id="customMessage" rows="4" class="hidden"
+              placeholder="Type the exact text you want to send…"></textarea>
+
+    <label>Upload .csv / .json with URLs</label>
+    <input id="fileInput" type="file" accept=".json,.csv" />
+  </div>
+
+  <!-- ───── action buttons & log ───── -->
   <button id="dry">Dry-run</button>
   <button id="run">Run automation</button>
   <button id="downloadLog">Download logs</button>
 
-  <pre id="log" style="white-space:pre-wrap;height:120px;overflow:auto;"></pre>
+  <pre id="log"></pre>
 
   <script src="popup.js" type="module"></script>
 </body>
