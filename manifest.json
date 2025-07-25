@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ConnectIN ",
-  "description": "Auto-message LinkedIn profiles and Twitter users, and comment on posts/tweets with Claude personas.",
-  "version": "0.1.1",
+  "description": "Auto-message LinkedIn profiles, Twitter and Instagram users, and comment on posts/tweets with Claude personas.",
+  "version": "0.1.2",
   "action": {
     "default_popup": "popup.html",
     "default_title": "LinkedIn AI Outreach"
@@ -40,12 +40,18 @@
         "https://x.com/*",
         "https://www.instagram.com/*",
         "https://*.instagram.com/*",
-        "https://instagram.com/*"
+        "https://instagram.com/*",
+        "<all_urls>"
       ],
       "js": [
         "content.js"
       ],
       "world": "MAIN",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["bridge.js"],
       "run_at": "document_idle"
     }
   ],

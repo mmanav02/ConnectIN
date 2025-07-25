@@ -7,6 +7,7 @@ import { runTwitterDM }                       from './twitter/message.js';
 import { runTwitterComment }                  from './twitter/comment.js';
 import { runInstagramComment }                from './instagram/comment.js';
 import { runInstagramDM }                     from './instagram/message.js';
+import { linkedinUrlsMessageAutomation }      from './linkedin/message.js';
 
 const { downloadLog } = L;
 
@@ -249,3 +250,31 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
   return true;
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "FROM_CONTENT") {
+    console.log("Received from content:", message.payload);
+    L.log('job enqueued, size: ',message.payload.linkedin_urls.length);
+    q.push(message.payload);
+    if (!busy) drainReceivedUrls();
+  }
+});
+
+async function drainReceivedUrls() {
+  busy = true;
+  L.log('drain started');
+  while (q.length) {
+    const msg = q.shift();
+    try {
+      const urls = msg.linkedin_urls;
+      const dryRun = 1;
+      const text = msg.message;
+      console.log("Text:",text);
+      await linkedinUrlsMessageAutomation({urls, dryRun, delay, randomDelay, waitForTabLoad, text })
+    } catch (e) {
+      L.error('runner error:', e.message || e);
+    }
+  }
+  busy = false;
+  L.log('drain finished');
+}
