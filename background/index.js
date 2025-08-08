@@ -254,8 +254,8 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "FROM_CONTENT") {
     console.log("Received from content:", message.payload);
-    L.log('job enqueued, size: ',message.payload.linkedin_urls.length);
-    q.push(message.payload);
+    L.log('job enqueued, size: ',message.payload.linkedin_data.length);
+    q.push(message.payload.linkedin_data);
     if (!busy) drainReceivedUrls();
   }
 });
@@ -266,11 +266,15 @@ async function drainReceivedUrls() {
   while (q.length) {
     const msg = q.shift();
     try {
-      const urls = msg.linkedin_urls;
       const dryRun = 1;
-      const text = msg.message;
-      console.log("Text:",text);
-      await linkedinUrlsMessageAutomation({urls, dryRun, delay, randomDelay, waitForTabLoad, text })
+      const persona = msg.persona;
+      await linkedinUrlsMessageAutomation({
+        profiles: msg, 
+        dryRun, 
+        delay, 
+        randomDelay, 
+        waitForTabLoad, 
+        persona })
     } catch (e) {
       L.error('runner error:', e.message || e);
     }

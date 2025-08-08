@@ -2,14 +2,20 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <title>Streaml Outreach Tool</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- ───── API key ───── -->
+  <!-- Logo Header -->
+  <div class="header">
+    <img src="CompanyImage.png" alt="Streaml Logo" class="logo" />
+  </div>
+
+  <!-- API Key Input -->
   <label>Anthropic API Key</label>
   <input id="apiKey" type="password" placeholder="sk-ant-…" />
 
-  <!-- ───── Platform selector ───── -->
+  <!-- Platform Selector -->
   <label>Platform</label>
   <select id="platform">
     <option value="linkedin">LinkedIn</option>
@@ -17,7 +23,7 @@
     <option value="instagram">Instagram</option>
   </select>
 
-  <!-- ───── Instagram-only selector ───── -->
+  <!-- Instagram-Specific Options -->
   <section id="ig-block" class="row hidden">
     <label for="ig-task">Instagram task</label>
     <select id="ig-task">
@@ -27,7 +33,7 @@
     </select>
   </section>
 
-  <!-- ───── Generic message-controls block ───── -->
+  <!-- General Messaging Controls -->
   <div id="msg-block">
     <label>Function</label>
     <select id="task">
@@ -38,20 +44,19 @@
     <label>Persona</label>
     <select id="persona"></select>
 
-    <!-- custom-message textarea (hidden until persona = custom) -->
     <label id="customLabel" class="hidden">Custom message</label>
-    <textarea id="customMessage" rows="4" class="hidden"
-              placeholder="Type the exact text you want to send…"></textarea>
+    <textarea id="customMessage" rows="4" class="hidden" placeholder="Type the exact text you want to send…"></textarea>
 
     <label>Upload .csv / .json with URLs</label>
     <input id="fileInput" type="file" accept=".json,.csv" />
   </div>
 
-  <!-- ───── action buttons & log ───── -->
-  <button id="dry">Dry-run</button>
-  <button id="run">Run automation</button>
-  <button id="downloadLog">Download logs</button>
+  <!-- Action Buttons -->
+  <button id="dry">💡 Dry-run</button>
+  <button id="run">🚀 Run automation</button>
+  <button id="downloadLog">📥 Download logs</button>
 
+  <!-- Logs -->
   <pre id="log"></pre>
 
   <script src="popup.js" type="module"></script>

@@ -154,14 +154,16 @@ function fillMessage(text) {
 
 /* Linkedin Automated Message received from site */
 export async function linkedinUrlsMessageAutomation(
-  { urls, dryRun, delay, randomDelay, waitForTabLoad, text }
+  { profiles, dryRun, delay, randomDelay, waitForTabLoad, persona }
 ) {
   dryRun = 1
-  L.log(`DM run started, urls: ${urls.length}`);
+  L.log(`DM run started, urls: ${profiles.length}`);
 
-  for (const url of urls) {
+  for (const profile of profiles) {
     try{
       await delay(randomDelay());
+      const url = profile.url;
+      const text = profile.message;
       L.log('opening profile URL at: ', url);
 
       L.log("📍Creating new tab...");
@@ -170,11 +172,22 @@ export async function linkedinUrlsMessageAutomation(
 
       L.log("📍Tab loaded...");
 
-      
-      console.log("Sending Message: ",text);
-      if (!text) continue;
+      // const [{ result: ctx }] = await chrome.scripting.executeScript({
+      // target: { tabId: id },
+      // func  : scrapeProfileContext,
+      // world : 'MAIN'
+      // });
+      // if (!ctx || !ctx.name) L.warn('context empty for', url);
 
-      await delay(randomDelay);
+      // const personaKey = "User"
+      
+      // const prompt = buildPrompt(personaKey, persona, ctx);
+      // const text   = await callClaude(prompt)
+      //                     .catch(err => (L.error('Claude error', err), null));
+      // console.log("Message Text: ",text);
+      // if (!text) continue;
+
+      await delay(randomDelay());
 
       if(!dryRun)
       {
