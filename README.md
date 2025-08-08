@@ -1,95 +1,145 @@
-# ConnectIN – LinkedIn, Twitter & Instagram Outreach Extension (MV3)
+# ConnectIN – AI-Powered Outreach Automation (LinkedIn, Twitter, Instagram)
 
-Automate personalized messaging and post engagement on **LinkedIn**, **Twitter/X**, and **Instagram** with AI‑generated text (Claude, Gemini, etc.).
+Automate personalized **messaging** and **post engagement** across LinkedIn, Twitter/X, and Instagram — with AI-generated text from providers like Anthropic Claude or Google Gemini.
+
+The extension handles:
+- Opening target profile/post URLs
+- Scraping contextual text
+- Generating messages/comments using AI personas
+- Sending them with human-like random delays
+
+---
 
 ## ✨ Features
 
-| Platform   | Task     | Action                                                                                               |
-|------------|----------|------------------------------------------------------------------------------------------------------|
-| LinkedIn   | Message  | DM each profile with persona‑styled text. **Automatically scrapes all visible profile URLs** on the current page—no extra file needed. |
-| LinkedIn   | Comment  | Comment on each post                                                                                 |
-| Twitter    | DM       | Direct‑message each profile                                                                          |
-| Twitter    | Reply    | Reply to each tweet                                                                                  |
-| Instagram  | Message  | DM each profile (inbox) with persona‑styled text                                                     |
-| Instagram  | Comment  | Comment on each post                                                                                 |
-| Instagram  | Scrape   | Scraping posts and all the profiles in the comment section of the posts                              |
+| Platform   | Task         | Action                                                      |
+|------------|--------------|-------------------------------------------------------------|
+| **LinkedIn** | Message      | Open each profile, scrape details, generate persona-styled DM, and send |
+|            | Comment      | Open each post, scrape post text, generate persona-styled comment, and post |
+| **Twitter**  | Message      | DM each profile with persona-styled text                   |
+|            | Comment      | Reply to each tweet with persona-styled text                |
+| **Instagram**| Message      | DM each profile with persona-styled text                   |
+|            | Comment      | Comment on posts with persona-styled text                   |
+|            | Extract Posts| Scrape all post URLs from the active tab                    |
+|            | Extract Profiles from Comments | Crawl saved posts, collect unique profile URLs from comment sections |
 
-## 📁 Folder Layout
+---
 
-```
-connectin/
-├─ manifest.json
-├─ popup.{html,js,css}
-├─ personas.json
+## 📢 **Major Note on LinkedIn Integration**
+
+> **Direct Streaml Website Integration**  
+> The LinkedIn messaging functionality is designed to also accept **profile URLs** and a **personalized message** directly from the [Streaml](https://streaml.ai) website.  
+>  
+> When triggered, the extension:
+> 1. Receives a payload from Streaml containing:
+>    - `linkedin_urls`: An array of profile URLs to message
+>    - `message`: The personalized message text (can be AI-generated on Streaml's side)
+>    - `persona`: The selected persona style
+> 2. Queues these for processing in `background/index.js` via the `FROM_CONTENT` listener.
+> 3. Executes the `linkedinUrlsMessageAutomation()` function to open each profile and send the given message with human-like delays.
+
+This integration allows **Streaml** to act as the campaign control center, while **ConnectIN** performs the browser-side automation.
+
+---
+
+## 📂 Folder Structure
+
+ConnectIN/
+├─ manifest.json # Chrome MV3 manifest
+├─ popup.html / popup.js / popup.css # Popup UI
+├─ personas.json # Persona definitions for AI prompt styling
 ├─ background/
-│  ├─ index.js          # service worker / dispatcher
-│  ├─ logger.js
-│  ├─ utils.js          # delay helpers, AI calls
-│  ├─ linkedin/
-│  │   ├─ message.js    # DM logic + profile scraper
-│  │   └─ comment.js    # post-comment logic
-│  ├─ twitter/
-│  │   ├─ message.js    # DM logic
-│  │   └─ comment.js    # tweet-reply logic
-│  └─ instagram/
-│      ├─ message.js    # DM logic
-│      └─ comment.js    # post-comment logic
-├─ data/                # sample *.json URL lists for testing
-└─ icons/
-   ├─ 128.jpg
-   └─ ConnectIN.png
-```
+│ ├─ index.js # Main dispatcher, queue handling, URL extraction
+│ ├─ logger.js # Logging helper
+│ ├─ utils.js # Shared helpers (delay, randomDelay, waitForTabLoad, AI calls)
+│ ├─ linkedin/
+│ │ ├─ message.js # LinkedIn DM logic
+│ │ └─ comment.js # LinkedIn comment logic
+│ ├─ twitter/
+│ │ ├─ message.js # Twitter DM logic
+│ │ └─ comment.js # Twitter comment logic
+│ └─ instagram/
+│ ├─ message.js # Instagram DM logic
+│ └─ comment.js # Instagram comment logic
 
-*(The LinkedIn scraper lives inside `background/linkedin/message.js` as `scrapeProfileContext()`—hence no separate `scrape.js` file.)*
 
-## ⚙️ Install
+---
 
-1. Clone or unzip the repo  
-2. Open **Chrome** and navigate to `chrome://extensions`  
-3. Enable **Developer mode**  
-4. Click **Load unpacked**, then select the project folder (`ConnectIN/`)  
-5. Grant requested permissions when prompted  
+## ⚙️ How It Works
 
-## 🔧 Configuration
+1. **Queue system**  
+   - Jobs (message/comment tasks) are enqueued and processed in FIFO order.
+   - Prevents parallel execution issues by using a single `busy` flag.
 
-| Setting       | Where                       | Notes                                                 |
-|---------------|-----------------------------|-------------------------------------------------------|
-| **API Key**   | Popup → *Settings* tab      | Masked, stored with `chrome.storage`                  |
-| **Personas**  | `personas.json`             | Define `tone`, `goal`, `background` for each persona  |
-| **Delays**    | `background/utils.js`       | Tweak `MIN_DELAY_MS` / `MAX_DELAY_MS`                 |
+2. **Content scripts & background service worker**  
+   - Content scripts scrape necessary context from the target profile/post.
+   - Background scripts open and control tabs to perform the automation.
 
-## 🚀 Usage
+3. **Persona-based AI text generation**  
+   - `personas.json` defines different tones & styles.
+   - Context + persona are passed to the AI API to generate human-like text.
 
-### 1) Upload a URL file  
-Upload a `.csv` or `.json` list of URLs → choose **Platform**, **Task**, **Persona** → **Run automation** or **Dry‑run**.
+4. **Random delays & throttling**  
+   - `delay()` and `randomDelay()` mimic human behavior to reduce detection risk.
 
-### 2) LinkedIn Auto‑Scrape (no file)  
-If **Platform = LinkedIn** + **Task = Message** and *no* file is chosen, the extension will:
+5. **Streaml-triggered LinkedIn Campaigns**  
+   - Streaml can send ready-to-send campaign data directly into ConnectIN for automated delivery.
 
-1. Collect all visible profile links on the current LinkedIn page (search results, "My Network", etc.)  
-2. Queue them and start sending DMs with your selected persona text.
+---
 
-You can preview or download the scraped list before sending.
+## 🚀 Installation
 
-## 📜 Logs
+1. Clone or download this repository.
+2. Open **Chrome** → `chrome://extensions`
+3. Enable **Developer mode** (top right).
+4. Click **Load unpacked** → Select the `ConnectIN/` folder.
+5. The extension icon should now appear in your browser.
 
-Use **Download logs** (popup) to save a timestamped `.txt` with URL, prompt, length, and status.
+---
 
-## 🛡️ Permissions
+## 🖥 Usage
 
-- `activeTab`, `tabs`, `scripting` – inject scripts & autofill forms  
-- `storage` – persist API key and settings  
-- Host permissions: `linkedin.com/*`, `twitter.com/*`, `x.com/*`, `instagram.com/*`  
-- No analytics; data flows only to the configured AI API.
+### **Manual Use (Popup UI)**
+1. **Set your API Key & Persona**
+   - Open the popup.
+   - Enter your AI API key (e.g., Anthropic Claude, Google Gemini).
+   - Select a persona (e.g., Sales Rep, Startup Founder).
 
-## 🔄 Dev Workflow
+2. **Choose a Task & Platform**
+   - Message or Comment.
+   - LinkedIn, Twitter, or Instagram.
 
-```bash
-npm i && npm run build   # bundle background & popup
-npm run watch            # hot‑reload (re‑enable extension after build)
-```
+3. **Provide Target URLs**
+   - Paste profile/post URLs manually, or use the in-page extractor buttons.
 
-## License
-MIT © 2025
+4. **Run Automation**
+   - Click **Start** to begin processing the queue.
+   - Logs will be shown in the console and can be downloaded via the popup.
 
-This repository is part of my internship at [StreamL](https://streaml.app/)
+---
+
+### **Automated Streaml Integration**
+When running a campaign from **Streaml**:
+- Streaml sends the payload with `linkedin_urls`, `message`, and `persona` to ConnectIN.
+- The extension automatically processes the list without needing manual URL input in the popup.
+
+---
+
+## 🛡 Privacy & Security
+
+- API keys are stored locally and never shared with third parties beyond the AI provider you choose.
+- All operations run locally in your browser using the Chrome Extension APIs.
+
+---
+
+## ⚠ Disclaimer
+
+This tool automates interactions on social media platforms.  
+**Use responsibly and in compliance with the Terms of Service** of LinkedIn, Twitter, and Instagram.  
+Excessive automation may result in account restrictions.
+
+---
+
+## 📜 License
+
+MIT License
