@@ -153,7 +153,7 @@ function fillMessage(text) {
 }
 
 /* Linkedin Automated Message received from site */
-export async function linkedinUrlsMessageAutomation(
+export async function linkedinUrlsMessageAssist(
   { profiles, dryRun, delay, randomDelay, waitForTabLoad, persona }
 ) {
   dryRun = 1
@@ -171,21 +171,6 @@ export async function linkedinUrlsMessageAutomation(
       await waitForTabLoad(id);
 
       L.log("📍Tab loaded...");
-
-      // const [{ result: ctx }] = await chrome.scripting.executeScript({
-      // target: { tabId: id },
-      // func  : scrapeProfileContext,
-      // world : 'MAIN'
-      // });
-      // if (!ctx || !ctx.name) L.warn('context empty for', url);
-
-      // const personaKey = "User"
-      
-      // const prompt = buildPrompt(personaKey, persona, ctx);
-      // const text   = await callClaude(prompt)
-      //                     .catch(err => (L.error('Claude error', err), null));
-      // console.log("Message Text: ",text);
-      // if (!text) continue;
 
       await delay(randomDelay());
 
