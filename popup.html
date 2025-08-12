@@ -10,18 +10,19 @@
   <div class="header" id="companylogo">
     <img src="CompanyImage.png" alt="Streaml Logo" class="logo" />
   </div>
+  <br>
 
   <!-- Mode Toggle -->
   <div class="row inline mode-row">
-    <button id="modeToggleBtn" type="button">🔁 Switch to Automation</button>
-    <button id="clearLog" type="button" title="Clear logs">🧹 Clear</button>
+    <button id="modeToggleBtn" type="button">Switch to Automation</button>
     <br>
-    <p id="modeLabel" class="muted">Current: Manual</p>
   </div>
+    <p id="modeLabel" class="muted">Current: Manual</p>
+
 
   <!-- Automation listening block (visible in automation mode) -->
   <section id="auto-block">
-    <p><span class="spinner"></span><strong>Automation mode:</strong> waiting for URLs from Streaml…</p>
+    <p><strong>Automation mode:</strong> waiting for URLs from Streaml…</p>
     <p class="muted">When your website sends a trigger, you’ll see it logged below.</p>
   </section>
 
@@ -68,13 +69,14 @@
     </div>
 
     <!-- Action Buttons -->
-    <button id="dry">💡 Dry-run</button>
-    <button id="run">🚀 Run automation</button>
-    <button id="downloadLog">📥 Download logs</button>
+    <button id="dry">Dry-run</button>
+    <button id="run">Run automation</button>
+    <button id="downloadLog">Download logs</button>
   </div>
 
   <!-- Logs (always visible) -->
   <pre id="log"></pre>
+  <button id="clearLog" type="button" title="Clear logs" class="clear-btn">Clear Log</button>
 
   <script src="popup.js" type="module"></script>
 </body>

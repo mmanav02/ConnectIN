@@ -19,7 +19,7 @@ let mode = 'manual'; // 'manual' | 'automation'
     sel.appendChild(opt);
   } catch (e) {
     console.error(e);
-    log('❌ could not load personas.json');
+    log('could not load personas.json');
   }
 })();
 
@@ -99,7 +99,7 @@ function toggleUi() {
 function applyMode() {
   const isAutomation = (mode === 'automation');
 
-  modeBtn.textContent   = isAutomation ? '🔁 Switch to Manual' : '🔁 Switch to Automation';
+  modeBtn.textContent   = isAutomation ? 'Switch to Manual' : 'Switch to Automation';
   log(mode === 'automation'
       ? '🟦 Automation mode: listening for website triggers…'
       : '🟩 Manual mode: ready.');
@@ -110,13 +110,13 @@ function applyMode() {
   [platformSel, taskSel, igTaskSel, personaSel, fileInput, customMsg, apiInput]
     .forEach(el => { if (el) el.disabled = disable; });
 
-  if (isAutomation) log('🕓 Waiting for URLs from Streaml…');
+  if (isAutomation) log('Waiting for URLs from Streaml…');
 }
 
 /* ───────── Manual runner ───────── */
 async function start(dryRun = 0) {
   if (document.documentElement.dataset.mode !== 'manual') {
-    log('ℹ️ In Automation mode. Switch to Manual to run locally.');
+    log('In Automation mode. Switch to Manual to run locally.');
     return;
   }
 
@@ -129,11 +129,11 @@ async function start(dryRun = 0) {
   const isCustom = personaSel.selectedOptions[0]?.dataset.custom === '1';
   const customTx = customMsg.value.trim();
 
-  if (!apiKey) return log('⚠️  API key is required');
-  if (isCustom && !customTx) return log('⚠️  Enter your custom message');
+  if (!apiKey) return log('  API key is required');
+  if (isCustom && !customTx) return log(' Enter your custom message');
 
   const meta = isCustom ? { prompt: customTx } : personas[persona];
-  if (!meta) return log(`❌ persona “${persona}” not found`);
+  if (!meta) return log(` persona “${persona}” not found`);
 
   // figure out URL source
   let urls = [];
@@ -151,10 +151,10 @@ async function start(dryRun = 0) {
       ? JSON.parse(raw)
       : raw.split(/[\n,]/).map(u => u.trim()).filter(Boolean);
   } else {
-    return log('⚠️ Upload a file or enable page extractor mode.');
+    return log('Upload a file or enable page extractor mode.');
   }
 
-  if (!urls.length) return log('⚠️ No URLs found');
+  if (!urls.length) return log('No URLs found');
 
   chrome.storage.local.set({ apiKey });
 
@@ -173,7 +173,7 @@ async function start(dryRun = 0) {
       urls,
       dryRun
     },
-    res => log(res?.msg || '✅ Queued')
+    res => log(res?.msg || ' Queued')
   );
 }
 
