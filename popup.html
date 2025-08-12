@@ -7,56 +7,73 @@
 </head>
 <body>
   <!-- Logo Header -->
-  <div class="header">
+  <div class="header" id="companylogo">
     <img src="CompanyImage.png" alt="Streaml Logo" class="logo" />
   </div>
 
-  <!-- API Key Input -->
-  <label>Anthropic API Key</label>
-  <input id="apiKey" type="password" placeholder="sk-ant-…" />
-
-  <!-- Platform Selector -->
-  <label>Platform</label>
-  <select id="platform">
-    <option value="linkedin">LinkedIn</option>
-    <option value="twitter">Twitter</option>
-    <option value="instagram">Instagram</option>
-  </select>
-
-  <!-- Instagram-Specific Options -->
-  <section id="ig-block" class="row hidden">
-    <label for="ig-task">Instagram task</label>
-    <select id="ig-task">
-      <option value="posts">Scrape posts on this page</option>
-      <option value="comment-profiles">Scrape profiles from comment section</option>
-      <option value="start-messaging">Start messaging scraped profiles</option>
-    </select>
-  </section>
-
-  <!-- General Messaging Controls -->
-  <div id="msg-block">
-    <label>Function</label>
-    <select id="task">
-      <option value="message">Message profiles</option>
-      <option value="comment">Comment on posts</option>
-    </select>
-
-    <label>Persona</label>
-    <select id="persona"></select>
-
-    <label id="customLabel" class="hidden">Custom message</label>
-    <textarea id="customMessage" rows="4" class="hidden" placeholder="Type the exact text you want to send…"></textarea>
-
-    <label>Upload .csv / .json with URLs</label>
-    <input id="fileInput" type="file" accept=".json,.csv" />
+  <!-- Mode Toggle -->
+  <div class="row inline mode-row">
+    <button id="modeToggleBtn" type="button">🔁 Switch to Automation</button>
+    <button id="clearLog" type="button" title="Clear logs">🧹 Clear</button>
+    <br>
+    <p id="modeLabel" class="muted">Current: Manual</p>
   </div>
 
-  <!-- Action Buttons -->
-  <button id="dry">💡 Dry-run</button>
-  <button id="run">🚀 Run automation</button>
-  <button id="downloadLog">📥 Download logs</button>
+  <!-- Automation listening block (visible in automation mode) -->
+  <section id="auto-block">
+    <p><span class="spinner"></span><strong>Automation mode:</strong> waiting for URLs from Streaml…</p>
+    <p class="muted">When your website sends a trigger, you’ll see it logged below.</p>
+  </section>
 
-  <!-- Logs -->
+  <!-- MANUAL-ONLY UI (hidden in automation mode via CSS) -->
+  <div id="manual-ui">
+    <!-- API Key Input -->
+    <label>Anthropic API Key</label>
+    <input id="apiKey" type="password" placeholder="sk-ant-…" />
+
+    <!-- Platform Selector -->
+    <label>Platform</label>
+    <select id="platform">
+      <option value="linkedin">LinkedIn</option>
+      <option value="twitter">Twitter</option>
+      <option value="instagram">Instagram</option>
+    </select>
+
+    <!-- Instagram-Specific Options -->
+    <section id="ig-block" class="row hidden">
+      <label for="ig-task">Instagram task</label>
+      <select id="ig-task">
+        <option value="posts">Scrape posts on this page</option>
+        <option value="comment-profiles">Scrape profiles from comment section</option>
+        <option value="start-messaging">Start messaging scraped profiles</option>
+      </select>
+    </section>
+
+    <!-- General Messaging Controls -->
+    <div id="msg-block">
+      <label>Function</label>
+      <select id="task">
+        <option value="message">Message profiles</option>
+        <option value="comment">Comment on posts</option>
+      </select>
+
+      <label>Persona</label>
+      <select id="persona"></select>
+
+      <label id="customLabel" class="hidden">Custom message</label>
+      <textarea id="customMessage" rows="4" class="hidden" placeholder="Type the exact text you want to send…"></textarea>
+
+      <label>Upload .csv / .json with URLs</label>
+      <input id="fileInput" type="file" accept=".json,.csv" />
+    </div>
+
+    <!-- Action Buttons -->
+    <button id="dry">💡 Dry-run</button>
+    <button id="run">🚀 Run automation</button>
+    <button id="downloadLog">📥 Download logs</button>
+  </div>
+
+  <!-- Logs (always visible) -->
   <pre id="log"></pre>
 
   <script src="popup.js" type="module"></script>

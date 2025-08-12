@@ -88,6 +88,13 @@ async function submitInstagramComment(comment) {
   };
 
   waitTA((ta) => {
+    const proceed = window.confirm(
+      "Do you want to send the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     ta.focus();
     document.execCommand("insertText", false, comment);
     ta.dispatchEvent(new InputEvent("input", { bubbles: true }));
@@ -136,6 +143,13 @@ function fillInstagramComment(comment) {
   };
 
   waitTA((ta) => {
+    const proceed = window.confirm(
+      "Do you want to fill the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     ta.focus();
     document.execCommand("insertText", false, comment);
     ta.dispatchEvent(new InputEvent("input", { bubbles: true }));

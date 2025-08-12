@@ -1,3 +1,4 @@
+/* ─── Base Layout ─── */
 body {
   font: 14px/1.5 'Inter', system-ui, sans-serif;
   background: #ffffff;
@@ -16,9 +17,11 @@ body {
   animation: fadeIn 1s ease-in-out;
 }
 
+/* Keep logo nicely contained in a 300px popup */
 .logo {
-  width: 100vw;
-  height: 20vh;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .brand-name {
@@ -27,7 +30,7 @@ body {
   color: #0a66c2;
 }
 
-/* ─── Input/Select Styling ─── */
+/* ─── Inputs ─── */
 label {
   display: block;
   margin: 10px 0 4px;
@@ -56,7 +59,7 @@ textarea:focus {
   outline: none;
 }
 
-/* ─── Button Styling ─── */
+/* ─── Buttons ─── */
 button {
   width: 100%;
   margin-top: 10px;
@@ -75,6 +78,7 @@ button:hover {
   transform: translateY(-1px);
 }
 
+/* ─── Logs ─── */
 pre#log {
   height: 120px;
   margin-top: 10px;
@@ -88,12 +92,9 @@ pre#log {
   font-size: 12px;
 }
 
-/* ─── Hidden Utility ─── */
-.hidden {
-  display: none !important;
-}
+/* ─── Utilities ─── */
+.hidden { display: none !important; }
 
-/* ─── Flex Row ─── */
 .row {
   display: flex;
   align-items: center;
@@ -101,8 +102,46 @@ pre#log {
   margin: 6px 0;
 }
 
+.muted { color: #666; font-size: 12px; }
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ddd;
+  border-top-color: #0a66c2;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  vertical-align: -3px;
+  margin-right: 6px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* ─── Animations ─── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ─── Mode-based Visibility ───
+   Default to AUTOMATION until JS sets html[data-mode="manual"].
+   Header, mode row, and logs are always visible (outside #manual-ui). */
+#manual-ui { display: none; }     /* hide manual controls by default */
+#auto-block { display: block; }   /* show waiting block by default */
+
+/* When JS sets manual mode */
+html[data-mode="manual"] #manual-ui { display: block; }
+html[data-mode="manual"] #auto-block { display: none; }

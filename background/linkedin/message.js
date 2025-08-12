@@ -15,6 +15,8 @@ export async function runMessageAutomation(
     const { id } = await chrome.tabs.create({ url, active: false });
     await waitForTabLoad(id);
 
+
+
     const [{ result: ctx }] = await chrome.scripting.executeScript({
       target: { tabId: id },
       func  : scrapeProfileContext,
@@ -109,6 +111,13 @@ function sendMessage(text) {
   };
 
   waitBox(box => {
+    const proceed = window.confirm(
+      "Do you want to send the message automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     box.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, text);
@@ -144,6 +153,13 @@ function fillMessage(text) {
   };
 
   waitBox(box => {
+    const proceed = window.confirm(
+      "Do you want to fill the message automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     box.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, text);
@@ -171,6 +187,7 @@ export async function linkedinUrlsMessageAssist(
       await waitForTabLoad(id);
 
       L.log("📍Tab loaded...");
+
 
       await delay(randomDelay());
 

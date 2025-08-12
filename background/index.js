@@ -8,6 +8,7 @@ import { runTwitterComment }                  from './twitter/comment.js';
 import { runInstagramComment }                from './instagram/comment.js';
 import { runInstagramDM }                     from './instagram/message.js';
 import { linkedinUrlsMessageAssist }      from './linkedin/message.js';
+import { log } from './logger.js';
 
 const { downloadLog } = L;
 
@@ -284,3 +285,10 @@ async function drainReceivedUrls() {
   busy = false;
   L.log('drain finished');
 }
+
+// for logging outside
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg?.type === 'LOG') {
+    log(msg.message);
+  }
+});

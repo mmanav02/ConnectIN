@@ -81,6 +81,13 @@ function submitLinkedInComment(comment) {
   };
 
   waitEd(editor => {
+    const proceed = window.confirm(
+      "Do you want to send the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     editor.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, comment);
@@ -112,6 +119,13 @@ function fillLinkedInComment(comment) {
   };
 
   waitEd(editor => {
+    const proceed = window.confirm(
+      "Do you want to fill the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     editor.focus();
     document.execCommand('selectAll', false, null);
     document.execCommand('insertText', false, comment);

@@ -112,6 +112,13 @@ function sendMessage(text) {
   };
 
   waitTextbox((box) => {
+    const proceed = window.confirm(
+      "Do you want to send the message automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     box.focus();
     document.execCommand("insertText", false, text);
     box.dispatchEvent(new InputEvent("input", { bubbles: true }));
@@ -147,6 +154,13 @@ function fillMessage(text) {
   };
 
   waitTextbox((box) => {
+    const proceed = window.confirm(
+      "Do you want to fill the message automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+    }
     box.focus();
     document.execCommand("insertText", false, text);
     box.dispatchEvent(new InputEvent("input", { bubbles: true }));

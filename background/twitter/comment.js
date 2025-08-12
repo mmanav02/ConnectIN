@@ -72,6 +72,14 @@ async function submitTwitterComment(comment, pause = 1000) {
   const editor = await waitFor('div[role="textbox"][data-testid="tweetTextarea_0"], div[aria-label="Tweet text"][contenteditable="true"]');
   if (!editor) return false;
 
+  const proceed = window.confirm(
+      "Do you want to send the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+  }
+
   editor.focus();
   document.execCommand('selectAll', false, null);
   document.execCommand('insertText', false, comment);
@@ -102,6 +110,14 @@ async function fillTwitterComment(comment) {
 
   const editor = await waitFor('div[role="textbox"][data-testid="tweetTextarea_0"], div[aria-label="Tweet text"][contenteditable="true"]');
   if (!editor) return false;
+
+  const proceed = window.confirm(
+      "Do you want to fill the comment automatically?"
+    );
+    if (!proceed) {
+      console.log("User declined to fill message.");
+      return;
+  }
 
   editor.focus();
   document.execCommand('selectAll', false, null);
